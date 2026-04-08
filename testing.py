@@ -18,6 +18,9 @@ for i in range(10):
     cursor.execute("CREATE TABLE customers_temp LIKE customers")
     cursor.execute("INSERT INTO customers_temp SELECT * FROM customers")
     conn.commit()
+    cursor.execute("SELECT COUNT(*) AS total_rows_before FROM customers_temp")
+    total_rows_before = cursor.fetchone()[0]
+    print(f"Iteration {i+1} number of rows before: {total_rows_before}")
 
     start = time.perf_counter()
 
@@ -26,6 +29,10 @@ for i in range(10):
 
     end = time.perf_counter()
     times.append(end - start)
+
+    cursor.execute("SELECT COUNT(*) AS total_rows_after FROM customers_temp")
+    total_rows_after = cursor.fetchone()[0]
+    print(f"Iteration {i+1} number of rows after: {total_rows_after}")
 
 average_time = sum(times) / len(times)
 print("Run times:", times)
@@ -86,12 +93,18 @@ for i in range(10):
     db.customer_temp.drop()
     db.customers.aggregate([{'$match': {}}, {'$out': 'customers_temp'}])
 
+    total_docs_before = db.customers_temp.count_documents({})
+    pprint(f"Iteration {i+1} number of documents before: {total_docs_before}")
+    
     start = time.perf_counter()
 
     db.customers_temp.delete_many({"name":"Jon Mccullough"})
 
     end = time.perf_counter()
     times.append(end - start)
+    
+    total_docs_after = db.customers_temp.count_documents({})
+    pprint(f"Iteration {i+1} number of documents after: {total_docs_after}")
 
 average_time = sum(times) / len(times)
 print("Run times:", times)
