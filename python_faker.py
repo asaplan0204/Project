@@ -2,6 +2,7 @@
 from faker import Faker
 import pandas as pd
 import random
+import json
 
 fake = Faker()
 
@@ -35,19 +36,12 @@ for i in range(1, 15001):
         "email": email
     })
 
+# Mongodb customer json
+with open("mongo_customers.json", "w") as f:
+    json.dump(customers, f, indent=2)
 
-# Mongodb customer csv
-mongo_customers_documents = []
-for c in customers:
-    mongo_customers_documents.append({
-        "_id": c["_id"],
-        "name": c["name"],
-        "age": c["age"],
-        "contact_number": 'null' if c["contact_number"] is None else c["contact_number"],
-        "email": 'null' if c["email"] is None else c["email"]
-    })
-df_mongo_customers = pd.DataFrame(mongo_customers_documents)
-df_mongo_customers.to_csv("mongo_customers.csv", index=False)
+
+
 
 # Mysql customer csv
 mysql_customers_rows = []
@@ -61,8 +55,7 @@ for c in customers:
     })
 df_mysql_customers = pd.DataFrame(mysql_customers_rows)
 df_mysql_customers.to_csv("mysql_customers.csv", index=False)
-
-print(f"Generated mongo_customers.csv with {len(df_mongo_customers)} rows")
+print(f"Generated mongo_customers.json documents: {len(customers)}")
 print(f"Generated mysql_customers.csv with {len(df_mysql_customers)} rows")
 
 
@@ -97,23 +90,12 @@ for i in range(1, 100001):
     }
     sessions.append(session)
 
+# Mongodb session json
+with open("mongo_sessions.json", "w") as f:
+    json.dump(sessions, f, indent=2)
 
-# Mongodb session csv
-mongo_documents = []
-for s in sessions:
-    mongo_documents.append({
-        "_id": s["_id"],
-        "customer_id": s["customer_id"],
-        "watch_date": s["watch_date"],
-        "is_rewatch": s["is_rewatch"],
-        "movie": str(s["movie"]),
-        "moods": 'null' if s["moods"] is None else str(s["moods"]),
-        "watch_details": str(s["watch_details"])
-    })
-df_mongo_sessions = pd.DataFrame(mongo_documents)
-df_mongo_sessions.to_csv("mongo_sessions.csv", index=False)
 
-# Mysql session csv
+#Mysql session csv
 mysql_rows = []
 for s in sessions:
     pauses = s["watch_details"]["pause_schedule"]
@@ -139,6 +121,6 @@ for s in sessions:
 df_mysql_sessions = pd.DataFrame(mysql_rows)
 df_mysql_sessions.to_csv("mysql_sessions.csv", index=False)
 
-print(f"Generated mongo_sessions.csv rows: {len(df_mongo_sessions)}")
+print(f"Generated mongo_sessions.json documents: {len(sessions)}")
 print(f"Generated mysql_sessions.csv rows: {len(df_mysql_sessions)}")
 # %%
