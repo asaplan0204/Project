@@ -14,7 +14,7 @@ for i in range(10):
     end = time.perf_counter()
     times.append(end - start)
     
-
+    doc = sorted(doc)
     pprint(f"Iteration {i+1} first record: {doc[0]}")
 average_time = sum(times) / len(times)
 print("Run times:", times)

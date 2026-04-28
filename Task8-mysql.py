@@ -25,6 +25,7 @@ for i in range(10):
     end = time.perf_counter()
     times.append(end - start)
 
+    rows = sorted(rows)
     print(f"Iteration {i+1} first record: {rows[0]}")
 
 
